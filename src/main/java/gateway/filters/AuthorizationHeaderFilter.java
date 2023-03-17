@@ -1,4 +1,4 @@
-package com.aflk.gateway.filters;
+package gateway.filters;
 
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         this.environment = environment;
     }
     @Override
-    public GatewayFilter apply(AuthorizationHeaderFilter.Config config) {
+    public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             System.out.println(request.getURI());
