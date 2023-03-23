@@ -1,21 +1,37 @@
 server:
-  port: 9000
+  port: 8000
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://localhost:9999/eureka
+      
+#SECRET KEY
+jwt:
+  secret:
+    key: x!A%D*G-KaPdSgVkYp3s5v8y/B?E(H+M
+jasypt:
+  encryptor:
+    password: aflkkey
+token:
+  access-expired-time : 3600000
+  refresh-expired-time : 3600000
 
 spring:
   application:
     name: gateway
+  devtools:
+    restart:
+      enabled: 'true'
+    livereload:
+      enabled: 'true'       
   cloud:
     gateway:
       routes:
         - id: auth # 구분하기 위한 id값으로 임의로 작성해도 무관
-          predicates: # user/ 으로 요청이 들어오면
+          predicates: # auth/ 으로 요청이 들어오면
             - Path=/auth/**
           uri: lb://auth # 유레카 서버에서 auth를 찾아서 그곳으로 요청을 보낸다.
           filters:
@@ -33,6 +49,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie # 쿠키 삭제 후 실행
             - RewritePath=/user/(?<segment>.*), /$\{segment}
+            
         - id: user
           predicates:
             - Path=/user/swagger-ui/**
@@ -40,6 +57,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie # 쿠키 삭제 후 실행
             - RewritePath=/user/(?<segment>.*), /$\{segment}
+            
         - id: user
           predicates:
             - Path=/user/swagger-resources/**
@@ -47,6 +65,7 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie # 쿠키 삭제 후 실행
             - RewritePath=/user/(?<segment>.*), /$\{segment}
+            
         - id: user
           predicates:
             - Path=/user/v2/**
@@ -59,14 +78,14 @@ spring:
         # user/signup --회원가입
         - id: user
           predicates:
-            - Path=/user/user/signup
+            - Path=/user/signup
             - Method=POST
           uri: lb://user
           filters:
             - RemoveRequestHeader=Cookie # 쿠키 삭제 후 실행
             - RewritePath=/user/(?<segment>.*), /$\{segment}
 
-        # user/signup --내 정보 보기
+        # user/** --
         - id: user
           predicates:
             - Path=/user/**
