@@ -6,7 +6,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: ${DISCOVERY_URL}
+      defaultZone: ${DISCOVERY_URL}/eureka/
       
 #SECRET KEY
 jwt:
