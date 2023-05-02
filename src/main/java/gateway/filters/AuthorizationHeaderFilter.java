@@ -46,6 +46,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             System.out.println("reqJwt : " + jwt);
             
             if (!isJwtValid(jwt)){
+                System.out.println("isJwtValid : " + isJwtValid(jwt));
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
             
