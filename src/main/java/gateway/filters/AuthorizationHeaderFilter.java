@@ -43,10 +43,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authorizationHeader.replace("Bearer", "");
             
-            System.out.println("reqJwt : " + jwt);
-            
             if (!isJwtValid(jwt)){
-                System.out.println("isJwtValid : " + isJwtValid(jwt));
                 return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
             
@@ -68,10 +65,10 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         Key secretKey = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
         try {
             subject = 
-            		//Jwts.parser().setSigningKey(environment.getProperty("jwt.secret.key"))
-            		Jwts.parserBuilder().setSigningKey(secretKey).build()
-                    .parseClaimsJws(jwt).getBody()
-                    .getSubject();
+                //Jwts.parser().setSigningKey(environment.getProperty("jwt.secret.key"))
+                Jwts.parserBuilder().setSigningKey(secretKey).build()
+                .parseClaimsJws(jwt).getBody()
+                .getSubject();
         } catch (Exception exception) {
             returnValue = false;
         }

@@ -85,6 +85,16 @@ spring:
             - RemoveRequestHeader=Cookie # 쿠키 삭제 후 실행
             - RewritePath=/user/(?<segment>.*), /$\{segment}
 
+        # user/login --로그인
+        - id: user
+          predicates:
+            - Path=/user/login
+            - Method=POST
+          uri: lb://user
+          filters:
+            - RemoveRequestHeader=Cookie # 쿠키 삭제 후 실행
+            - RewritePath=/user/(?<segment>.*), /$\{segment}
+
         # user/** --
         - id: user
           predicates:
