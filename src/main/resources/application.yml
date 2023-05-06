@@ -30,7 +30,7 @@ spring:
   cloud:
     gateway:
       default-filters:
-        - name: Cors
+        - name: corsFilter
       globalcors:
         corsConfigurations:
           '[/**]':
