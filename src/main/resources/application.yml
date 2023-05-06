@@ -33,8 +33,7 @@ spring:
         corsConfigurations:
           '[/**]':
             allowedOrigins:
-              - "http://192.168.0.8:7089"
-            allow-credentials: true
+              - "*"
             allowedHeaders:
               - x-requested-with
               - authorization
