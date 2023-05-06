@@ -29,8 +29,6 @@ spring:
       enabled: 'true'
   cloud:
     gateway:
-      default-filters:
-        - name: CorsFilter
       globalcors:
         corsConfigurations:
           '[/**]':
