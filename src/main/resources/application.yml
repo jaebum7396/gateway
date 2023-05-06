@@ -29,6 +29,15 @@ spring:
       enabled: 'true'
   cloud:
     gateway:
+      default-filters:
+        - name: Cors
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
+            maxAge: 3600
       routes:
         - id: auth # 구분하기 위한 id값으로 임의로 작성해도 무관
           predicates: # auth/ 으로 요청이 들어오면
