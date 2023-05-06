@@ -32,10 +32,19 @@ spring:
       globalcors:
         corsConfigurations:
           '[/**]':
-            allowedOrigins: "*"
-            allowedHeaders: "*"
-            allowedMethods: "*"
-            maxAge: 3600
+            allowedOrigins:
+              - "http://192.168.0.8:7089"
+            allow-credentials: true
+            allowedHeaders:
+              - x-requested-with
+              - authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
+            allowedMethods:
+              - POST
+              - GET
       routes:
         - id: auth # 구분하기 위한 id값으로 임의로 작성해도 무관
           predicates: # auth/ 으로 요청이 들어오면
