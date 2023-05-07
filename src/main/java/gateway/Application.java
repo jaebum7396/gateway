@@ -8,11 +8,14 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @SpringBootApplication
 public class Application {
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-	@Bean
-	public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity security) {
-		return security.csrf().disable().build();
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity security) {
+    	return security.csrf().disable().build();
+    }
+
+
 }
