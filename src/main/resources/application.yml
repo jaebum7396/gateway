@@ -51,15 +51,35 @@ spring:
           filters:
             - RewritePath=/auth/(?<segment>.*), /$\{segment}
 
-        - id: user-swagger
+        # user/swagger 시작
+        - id: user
           predicates:
             - Path=/user/swagger/**
+          uri: lb://user
+          filters:
+            - RewritePath=/user/(?<segment>.*), /$\{segment}
+
+        - id: user
+          predicates:
             - Path=/user/swagger-ui/**
+          uri: lb://user
+          filters:
+            - RewritePath=/user/(?<segment>.*), /$\{segment}
+
+        - id: user
+          predicates:
             - Path=/user/swagger-resources/**
+          uri: lb://user
+          filters:
+            - RewritePath=/user/(?<segment>.*), /$\{segment}
+
+        - id: user
+          predicates:
             - Path=/user/v2/**
           uri: lb://user
           filters:
             - RewritePath=/user/(?<segment>.*), /$\{segment}
+        # user/swagger 끝
 
         - id: user-signup
           predicates:
