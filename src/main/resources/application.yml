@@ -10,7 +10,7 @@ eureka:
 
 logging:
   level:
-    org.springframework.cloud.gateway: trace
+    org.springframework.cloud.gateway: warn
 
 #SECRET KEY
 jwt:
