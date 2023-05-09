@@ -59,9 +59,9 @@ spring:
             - Path=/ws-stomp/**
             - Method=GET,OPTIONS,POST
           uri: lb://socket-streamer
-          filters:
-            - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
-            - SetPath=/ws-stomp/**
+          #filters:
+          #  - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
+          #  - SetPath=/ws-stomp/**
 
         # user/swagger 시작
         - id: user
