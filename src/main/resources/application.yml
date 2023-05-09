@@ -57,7 +57,7 @@ spring:
         - id: socket-streamer
           predicates:
             - Path=/ws-stomp/**
-            - Method=GET,OPTIONS,HEAD,TRACE,CONNECT,DELETE,POST,PUT,PATCH
+            - Method=GET,OPTIONS,POST
           uri: lb://ws-stomp
           filters:
             - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
