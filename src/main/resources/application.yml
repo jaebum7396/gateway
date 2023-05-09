@@ -41,6 +41,9 @@ spring:
             allowedOrigins:
               - ${CLIENT_URL}
               - ${CLIENT_URL_LOCAL}
+              - ${CLIENT_URL_LOCAL1}
+              - ${CLIENT_URL_LOCAL2}
+              - ${CLIENT_URL_LOCAL3}
             allowedHeaders: "*"
             allowedMethods: "*"
       routes:
