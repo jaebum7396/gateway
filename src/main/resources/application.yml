@@ -51,6 +51,14 @@ spring:
           filters:
             - RewritePath=/auth/(?<segment>.*), /$\{segment}
 
+        - id: socket-streamer
+          predicates:
+            - Path=/ws-stomp/**
+          uri: lb://ws-stomp
+          filters:
+            - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
+            - SetPath=/ws-stomp/**
+
         # user/swagger 시작
         - id: user
           predicates:
