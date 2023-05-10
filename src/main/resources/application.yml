@@ -70,6 +70,7 @@ spring:
           predicates:
             - Path=/user/swagger-ui/**
             - Path=/user/v2/**
+            - Path=/user/swagger-resources/**
           uri: lb://user
           filters:
             - RewritePath=/user/(?<segment>.*), /$\{segment}
