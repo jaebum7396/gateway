@@ -66,33 +66,13 @@ spring:
           #  - SetPath=/ws-stomp/**
 
         # user/swagger 시작
-        - id: user
+        - id: user-swagger
           predicates:
             - Path=/user/swagger/**
-          uri: lb://user
-          filters:
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
-
-        - id: user
-          predicates:
             - Path=/user/swagger-ui/**
-          uri: lb://user
-          filters:
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
-
-        - id: user
-          predicates:
             - Path=/user/swagger-resources/**
-          uri: lb://user
-          filters:
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
-
-        - id: user
-          predicates:
             - Path=/user/v2/**
-          uri: lb://user
-          filters:
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
+          uri: lb://user/swagger-ui
         # user/swagger 끝
 
         - id: user-signup
