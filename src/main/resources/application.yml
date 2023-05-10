@@ -45,6 +45,7 @@ spring:
               - ${CLIENT_URL_LOCAL2}
               - ${CLIENT_URL_LOCAL3}
               - ${CLIENT_URL_LOCAL4}
+              - ${CLIENT_URL_LOCAL5}
             allowedHeaders: "*"
             allowedMethods: "*"
       routes:
