@@ -49,13 +49,6 @@ spring:
             allowedHeaders: "*"
             allowedMethods: "*"
       routes:
-        - id: auth
-          predicates:
-            - Path=/auth/**
-          uri: lb://auth
-          filters:
-            - RewritePath=/auth/(?<segment>.*), /$\{segment}
-
         - id: socket-streamer
           predicates:
             - Path=/ws-stomp/**
@@ -64,6 +57,15 @@ spring:
           #filters:
           #  - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
           #  - SetPath=/ws-stomp/**
+
+        - id: file-storage
+          predicates:
+            - Path=/file-storage/**
+            - Method=OPTIONS,POST,GET
+          uri: lb://file-storage
+          filters:
+            - RewritePath=/file-storage/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
 
         # user/swagger 시작
         - id: user
