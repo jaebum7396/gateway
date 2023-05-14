@@ -146,7 +146,7 @@ spring:
         - id: user
           predicates:
             - Path=/user/me
-            - Method=GET
+            - Method=OPTIONS,POST,GET
           uri: lb://user
           filters:
             - RewritePath=/user/(?<segment>.*), /$\{segment}
