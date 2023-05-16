@@ -58,15 +58,6 @@ spring:
           #  - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
           #  - SetPath=/ws-stomp/**
 
-        - id: file-storage
-          predicates:
-            - Path=/file-storage/**
-            - Method=OPTIONS,POST,GET
-          uri: lb://file-storage
-          filters:
-            - RewritePath=/file-storage/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
         # user/swagger 시작
         - id: user
           predicates:
@@ -85,14 +76,14 @@ spring:
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
         # chat/swagger 끝
 
-        # FILE_STORAGE/swagger 시작
-        - id: FILE_STORAGE
+        # file_storage/swagger 시작
+        - id: file_storage
           predicates:
-            - Path=/FILE_STORAGE/swagger/**,/FILE_STORAGE/swagger-ui/**,/FILE_STORAGE/swagger-resources/**,/FILE_STORAGE/v2/**
-          uri: lb://FILE_STORAGE
+            - Path=/file_storage/swagger/**,/file_storage/swagger-ui/**,/file_storage/swagger-resources/**,/file_storage/v2/**
+          uri: lb://file_storage
           filters:
-            - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
-        # FILE_STORAGE/swagger 끝
+            - RewritePath=/file_storage/(?<segment>.*), /$\{segment}
+        # file_storage/swagger 끝
 
         - id: user-signup
           predicates:
@@ -126,4 +117,13 @@ spring:
           uri: lb://chat
           filters:
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: file-storage
+          predicates:
+            - Path=/file-storage/**
+            - Method=OPTIONS,POST,GET
+          uri: lb://file-storage
+          filters:
+            - RewritePath=/file-storage/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
