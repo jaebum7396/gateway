@@ -70,28 +70,7 @@ spring:
         # user/swagger 시작
         - id: user
           predicates:
-            - Path=/user/swagger/**
-          uri: lb://user
-          filters:
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
-
-        - id: user
-          predicates:
-            - Path=/user/swagger-ui/**
-          uri: lb://user
-          filters:
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
-
-        - id: user
-          predicates:
-            - Path=/user/swagger-resources/**
-          uri: lb://user
-          filters:
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
-
-        - id: user
-          predicates:
-            - Path=/user/v2/**
+            - Path=/user/swagger/**,/user/swagger-ui/**,/user/swagger-resources/**,/user/v2/**
           uri: lb://user
           filters:
             - RewritePath=/user/(?<segment>.*), /$\{segment}
@@ -100,28 +79,7 @@ spring:
         # chat/swagger 시작
         - id: chat
           predicates:
-            - Path=/chat/swagger/**
-          uri: lb://chat
-          filters:
-            - RewritePath=/chat/(?<segment>.*), /$\{segment}
-
-        - id: chat
-          predicates:
-            - Path=/chat/swagger-ui/**
-          uri: lb://chat
-          filters:
-            - RewritePath=/chat/(?<segment>.*), /$\{segment}
-
-        - id: chat
-          predicates:
-            - Path=/chat/swagger-resources/**
-          uri: lb://chat
-          filters:
-            - RewritePath=/chat/(?<segment>.*), /$\{segment}
-
-        - id: chat
-          predicates:
-            - Path=/chat/v2/**
+            - Path=/chat/swagger/**,/chat/swagger-ui/**,/chat/swagger-resources/**,/chat/v2/**
           uri: lb://chat
           filters:
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
@@ -130,28 +88,7 @@ spring:
         # FILE_STORAGE/swagger 시작
         - id: FILE_STORAGE
           predicates:
-            - Path=/FILE_STORAGE/swagger/**
-          uri: lb://FILE_STORAGE
-          filters:
-            - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
-
-        - id: FILE_STORAGE
-          predicates:
-            - Path=/FILE_STORAGE/swagger-ui/**
-          uri: lb://FILE_STORAGE
-          filters:
-            - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
-
-        - id: FILE_STORAGE
-          predicates:
-            - Path=/FILE_STORAGE/swagger-resources/**
-          uri: lb://FILE_STORAGE
-          filters:
-            - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
-
-        - id: FILE_STORAGE
-          predicates:
-            - Path=/FILE_STORAGE/v2/**
+            - Path=/FILE_STORAGE/swagger/**,/FILE_STORAGE/swagger-ui/**,/FILE_STORAGE/swagger-resources/**,/FILE_STORAGE/v2/**
           uri: lb://FILE_STORAGE
           filters:
             - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
