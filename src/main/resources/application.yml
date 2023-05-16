@@ -110,6 +110,15 @@ spring:
             - RewritePath=/user/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
+        - id: user
+          predicates:
+            - Path=/user/userInfo
+            - Method=OPTIONS,POST
+          uri: lb://user
+          filters:
+            - RewritePath=/user/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
         - id: chat
           predicates:
             - Path=/chat/**
