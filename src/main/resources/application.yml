@@ -49,17 +49,8 @@ spring:
             allowedHeaders: "*"
             allowedMethods: "*"
       routes:
-        - id: socket-streamer
-          predicates:
-            - Path=/ws-stomp/**
-            - Method=GET,OPTIONS,POST
-          uri: lb://socket-streamer
-          #filters:
-          #  - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
-          #  - SetPath=/ws-stomp/**
-
         # user/swagger 시작
-        - id: user
+        - id: user-swagger
           predicates:
             - Path=/user/swagger/**,/user/swagger-ui/**,/user/swagger-resources/**,/user/v2/**
           uri: lb://user
@@ -68,7 +59,7 @@ spring:
         # user/swagger 끝
 
         # chat/swagger 시작
-        - id: chat
+        - id: chat-swagger
           predicates:
             - Path=/chat/swagger/**,/chat/swagger-ui/**,/chat/swagger-resources/**,/chat/v2/**
           uri: lb://chat
@@ -77,13 +68,22 @@ spring:
         # chat/swagger 끝
 
         # file_storage/swagger 시작
-        - id: file_storage
+        - id: file-storage-swagger
           predicates:
-            - Path=/file_storage/swagger/**,/file_storage/swagger-ui/**,/file_storage/swagger-resources/**,/file_storage/v2/**
-          uri: lb://file_storage
+            - Path=/file-storage/swagger/**,/file-storage/swagger-ui/**,/file-storage/swagger-resources/**,/file-storage/v2/**
+          uri: lb://file-storage
           filters:
-            - RewritePath=/file_storage/(?<segment>.*), /$\{segment}
+            - RewritePath=/file-storage/(?<segment>.*), /$\{segment}
         # file_storage/swagger 끝
+
+        - id: socket-streamer
+          predicates:
+            - Path=/ws-stomp/**
+            - Method=GET,OPTIONS,POST
+          uri: lb://socket-streamer
+          #filters:
+          #  - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
+          #  - SetPath=/ws-stomp/**
 
         - id: user-signup
           predicates:
