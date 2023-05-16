@@ -127,6 +127,36 @@ spring:
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
         # chat/swagger 끝
 
+        # FILE_STORAGE/swagger 시작
+        - id: FILE_STORAGE
+          predicates:
+            - Path=/FILE_STORAGE/swagger/**
+          uri: lb://FILE_STORAGE
+          filters:
+            - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
+
+        - id: FILE_STORAGE
+          predicates:
+            - Path=/FILE_STORAGE/swagger-ui/**
+          uri: lb://FILE_STORAGE
+          filters:
+            - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
+
+        - id: FILE_STORAGE
+          predicates:
+            - Path=/FILE_STORAGE/swagger-resources/**
+          uri: lb://FILE_STORAGE
+          filters:
+            - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
+
+        - id: FILE_STORAGE
+          predicates:
+            - Path=/FILE_STORAGE/v2/**
+          uri: lb://FILE_STORAGE
+          filters:
+            - RewritePath=/FILE_STORAGE/(?<segment>.*), /$\{segment}
+        # FILE_STORAGE/swagger 끝
+
         - id: user-signup
           predicates:
             - Path=/user/signup
