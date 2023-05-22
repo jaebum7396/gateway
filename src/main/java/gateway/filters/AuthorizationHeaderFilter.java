@@ -73,14 +73,28 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         .then(Mono.fromRunnable(() -> {
             ResponseEntity responseEntity = ResponseEntity
                     .status(httpStatus.value())
-                    .body(response.toString());
+                    .body(response);
             exchange.getResponse()
                     .getHeaders()
                     .setContentType(MediaType.APPLICATION_JSON);
             exchange.getResponse()
                     .writeWith(Mono.just(exchange.getResponse()
-            .bufferFactory().wrap(responseEntity.toString().getBytes())));
+                    .bufferFactory()
+                    .wrap(responseEntity.toString().getBytes())));
         }));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity handleBadCredentialsException(BadCredentialsException e) {
+        Response responseResult;
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        e.printStackTrace();
+        responseResult = Response.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .status(HttpStatus.UNAUTHORIZED)
+                .message("인증되지 않은 사용자입니다.")
+                .result(resultMap).build();
+        return ResponseEntity.internalServerError().body(responseResult);
     }
 
     private boolean isJwtValid(String jwt) {
