@@ -18,6 +18,7 @@ import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFac
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -31,37 +32,10 @@ import reactor.core.publisher.Mono;
 @Component
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
     private final Environment environment;
-    
+
     public AuthorizationHeaderFilter(Environment environment) {
         super(Config.class);
         this.environment = environment;
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity handleBadCredentialsException(BadCredentialsException e) {
-        Response responseResult;
-        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        e.printStackTrace();
-        responseResult = Response.builder()
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .status(HttpStatus.UNAUTHORIZED)
-                .message("유효하지 않은 접근입니다.")
-                .result(resultMap).build();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(responseResult);
-    }
-
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity handleExpiredJwtException(ExpiredJwtException e) {
-        System.out.println("ExpiredJwtException");
-        Response responseResult;
-        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        e.printStackTrace();
-        responseResult = Response.builder()
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .status(HttpStatus.UNAUTHORIZED)
-                .message("로그인 시간이 만료되었습니다.")
-                .result(resultMap).build();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED.value()).body(responseResult);
     }
 
     @Override
@@ -69,36 +43,53 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             System.out.println(request.getURI());
-            
+
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)){
-                throw new BadCredentialsException("No authorization header");
+                return onError(exchange, "로그인 정보가 없습니다.", HttpStatus.UNAUTHORIZED);
             }
-            
+
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authorizationHeader.replace("Bearer", "");
-            
+
             if (!isJwtValid(jwt)){
-                throw new ExpiredJwtException(null, null, "JWT token is expired");
+                return onError(exchange, "로그인이 만료되었습니다.", HttpStatus.UNAUTHORIZED);
             }
-            
+
             return chain.filter(exchange);
         };
     }
-    
-    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
-        ServerHttpResponse response = exchange.getResponse();
-        response.setStatusCode(httpStatus);
-        log.error(err);
-        return response.setComplete();
+
+    private Mono<Void> onError(ServerWebExchange exchange, String errorMessage, HttpStatus httpStatus) {
+        log.error(errorMessage);
+        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
+        Response response = Response.builder()
+                .statusCode(httpStatus.value())
+                .status(httpStatus)
+                .message(errorMessage)
+                .result(resultMap).build();
+        exchange.getResponse().setStatusCode(httpStatus);
+        return exchange.getResponse()
+        .setComplete()
+        .then(Mono.fromRunnable(() -> {
+            ResponseEntity responseEntity = ResponseEntity
+                    .status(httpStatus.value())
+                    .body(response.toString());
+            exchange.getResponse()
+                    .getHeaders()
+                    .setContentType(MediaType.APPLICATION_JSON);
+            exchange.getResponse()
+                    .writeWith(Mono.just(exchange.getResponse()
+            .bufferFactory().wrap(responseEntity.toString().getBytes())));
+        }));
     }
-    
+
     private boolean isJwtValid(String jwt) {
     	boolean returnValue = true;
         String subject = null;
         String salt = environment.getProperty("jwt.secret.key");
         Key secretKey = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
         try {
-            subject = 
+            subject =
                 //Jwts.parser().setSigningKey(environment.getProperty("jwt.secret.key"))
                 Jwts.parserBuilder().setSigningKey(secretKey).build()
                 .parseClaimsJws(jwt).getBody()
@@ -110,6 +101,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         if (subject == null || subject.isEmpty()) {
             returnValue = false;
         }
+
         return returnValue;
     }
 
