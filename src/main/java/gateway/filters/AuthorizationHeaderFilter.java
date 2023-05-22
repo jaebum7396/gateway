@@ -1,7 +1,8 @@
 package gateway.filters;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gateway.model.Response;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -45,14 +44,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             System.out.println(request.getURI());
 
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)){
-                return onError(exchange, "로그인 정보가 없습니다.", HttpStatus.UNAUTHORIZED);
+                return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
 
             String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
             String jwt = authorizationHeader.replace("Bearer", "");
 
             if (!isJwtValid(jwt)){
-                return onError(exchange, "로그인이 만료되었습니다.", HttpStatus.UNAUTHORIZED);
+                return onError(exchange, "JWT token is not valid", HttpStatus.UNAUTHORIZED);
             }
 
             return chain.filter(exchange);
@@ -68,34 +67,38 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                 .message(errorMessage)
                 .result(resultMap).build();
         exchange.getResponse().setStatusCode(httpStatus);
+
+        ResponseEntity<Response> responseEntity = ResponseEntity
+                .status(httpStatus.value())
+                .body(response);
+
+        exchange.getResponse()
+                .getHeaders()
+                .setContentType(MediaType.APPLICATION_JSON);
+
         return exchange.getResponse()
-        .setComplete()
-        .then(Mono.fromRunnable(() -> {
-            ResponseEntity responseEntity = ResponseEntity
-                    .status(httpStatus.value())
-                    .body(response);
-            exchange.getResponse()
-                    .getHeaders()
-                    .setContentType(MediaType.APPLICATION_JSON);
-            exchange.getResponse()
-                    .writeWith(Mono.just(exchange.getResponse()
-                    .bufferFactory()
-                    .wrap(responseEntity.toString().getBytes())));
-        }));
+                .writeWith(Mono.just(exchange.getResponse()
+                        .bufferFactory()
+                        .wrap(toJsonBytes(responseEntity))));
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity handleBadCredentialsException(BadCredentialsException e) {
-        Response responseResult;
-        Map<String, Object> resultMap = new LinkedHashMap<String, Object>();
-        e.printStackTrace();
-        responseResult = Response.builder()
-                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                .status(HttpStatus.UNAUTHORIZED)
-                .message("인증되지 않은 사용자입니다.")
-                .result(resultMap).build();
-        return ResponseEntity.internalServerError().body(responseResult);
+    private byte[] toJsonBytes(Object object) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.writeValueAsBytes(object);
+        } catch (JsonProcessingException e) {
+            // Handle exception or throw
+            e.printStackTrace();
+            return new byte[0];
+        }
     }
+
+    //private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
+    //    ServerHttpResponse response = exchange.getResponse();
+    //    response.setStatusCode(httpStatus);
+    //    log.error(err);
+    //    return response.setComplete();
+    //}
 
     private boolean isJwtValid(String jwt) {
     	boolean returnValue = true;
