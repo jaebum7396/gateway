@@ -81,8 +81,8 @@ spring:
             - Path=/socket-streamer/**
             - Method=GET,OPTIONS,POST
           uri: lb://socket-streamer
-          #filters:
-          #  - RewritePath=/ws-stomp/(?<segment>.*), /$\{segment}
+          filters:
+            - RewritePath=/socket-streamer/(?<segment>.*), /$\{segment}
           #  - SetPath=/ws-stomp/**
 
         - id: user-signup
