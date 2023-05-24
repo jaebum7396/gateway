@@ -78,7 +78,7 @@ spring:
 
         - id: socket-streamer
           predicates:
-            - Path=/ws-stomp/**
+            - Path=/socket-streamer/**
             - Method=GET,OPTIONS,POST
           uri: lb://socket-streamer
           #filters:
