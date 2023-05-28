@@ -103,16 +103,7 @@ spring:
 
         - id: user
           predicates:
-            - Path=/user/me
-            - Method=OPTIONS,POST,GET
-          uri: lb://user
-          filters:
-            - RewritePath=/user/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
-        - id: user
-          predicates:
-            - Path=/user/userInfo
+            - Path=/user/me,/user/userInfo,/user/users
             - Method=OPTIONS,POST,GET
           uri: lb://user
           filters:
