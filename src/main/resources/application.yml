@@ -121,7 +121,15 @@ spring:
 
         - id: file-storage
           predicates:
-            - Path=/file-storage/**
+            - Path=/file-storage/display
+            - Method=OPTIONS,POST,GET
+          uri: lb://file-storage
+          filters:
+            - RewritePath=/file-storage/(?<segment>.*), /$\{segment}
+
+        - id: file-storage
+          predicates:
+            - Path=/file-storage/upload
             - Method=OPTIONS,POST,GET
           uri: lb://file-storage
           filters:
