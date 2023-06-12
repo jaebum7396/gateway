@@ -67,6 +67,15 @@ spring:
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
         # chat/swagger 끝
 
+        # gpt-connector/swagger 시작
+        - id: gpt-connector-swagger
+          predicates:
+            - Path=/gpt-connector/swagger/**,/gpt-connector/swagger-ui/**,/gpt-connector/swagger-resources/**,/gpt-connector/v2/**
+          uri: lb://gpt-connector
+          filters:
+            - RewritePath=/gpt-connector/(?<segment>.*), /$\{segment}
+        # gpt-connector/swagger 끝
+
         # file_storage/swagger 시작
         - id: file-storage-swagger
           predicates:
@@ -118,6 +127,14 @@ spring:
           filters:
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+
+        - id: gpt-connector
+          predicates:
+            - Path=/gpt-connector/**
+            - Method=OPTIONS,POST,GET
+          uri: lb://gpt-connector
+          filters:
+            - RewritePath=/gpt-connector/(?<segment>.*), /$\{segment}
 
         - id: file-storage
           predicates:
