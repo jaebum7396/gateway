@@ -152,3 +152,12 @@ spring:
           filters:
             - RewritePath=/file-storage/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+
+        - id: file-storage
+          predicates:
+            - Path=/file-storage/delete
+            - Method=OPTIONS,DELETE
+          uri: lb://file-storage
+          filters:
+            - RewritePath=/file-storage/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
