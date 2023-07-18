@@ -104,7 +104,7 @@ spring:
 
         - id: user-login
           predicates:
-            - Path=/user/login
+            - Path=/user/login,/user/login/refresh
             - Method=POST,OPTIONS
           uri: lb://user
           filters:
