@@ -3,6 +3,7 @@ package gateway.filters;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gateway.model.Response;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -102,14 +103,12 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private boolean isJwtValid(String jwt) {
     	boolean returnValue = true;
         String subject = null;
-        String salt = environment.getProperty("jwt.secret.key");
-        Key secretKey = Keys.hmacShaKeyFor(salt.getBytes(StandardCharsets.UTF_8));
+        String JWT_SECRET_KEY = environment.getProperty("jwt.secret.key");
+        Key secretKey = Keys.hmacShaKeyFor(JWT_SECRET_KEY.getBytes(StandardCharsets.UTF_8));
         try {
-            subject =
-                //Jwts.parser().setSigningKey(environment.getProperty("jwt.secret.key"))
-                Jwts.parserBuilder().setSigningKey(secretKey).build()
-                .parseClaimsJws(jwt).getBody()
-                .getSubject();
+            Claims claim = Jwts.parserBuilder().setSigningKey(secretKey).build()
+                .parseClaimsJws(jwt).getBody();
+            subject = claim.getSubject();
         } catch (Exception exception) {
             returnValue = false;
         }
@@ -117,7 +116,6 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         if (subject == null || subject.isEmpty()) {
             returnValue = false;
         }
-
         return returnValue;
     }
 

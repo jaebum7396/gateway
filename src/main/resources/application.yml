@@ -67,14 +67,14 @@ spring:
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
         # chat/swagger 끝
 
-        # gpt-connector/swagger 시작
-        - id: gpt-connector-swagger
+        # ai-connector/swagger 시작
+        - id: ai-connector-swagger
           predicates:
-            - Path=/gpt-connector/swagger/**,/gpt-connector/swagger-ui/**,/gpt-connector/swagger-resources/**,/gpt-connector/v2/**
-          uri: lb://gpt-connector
+            - Path=/ai-connector/swagger/**,/ai-connector/swagger-ui/**,/ai-connector/swagger-resources/**,/ai-connector/v2/**
+          uri: lb://ai-connector
           filters:
-            - RewritePath=/gpt-connector/(?<segment>.*), /$\{segment}
-        # gpt-connector/swagger 끝
+            - RewritePath=/ai-connector/(?<segment>.*), /$\{segment}
+        # ai-connector/swagger 끝
 
         # file_storage/swagger 시작
         - id: file-storage-swagger
@@ -128,13 +128,13 @@ spring:
             - RewritePath=/chat/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
-        - id: gpt-connector
+        - id: ai-connector
           predicates:
-            - Path=/gpt-connector/**
+            - Path=/ai-connector/**
             - Method=OPTIONS,POST,GET
-          uri: lb://gpt-connector
+          uri: lb://ai-connector
           filters:
-            - RewritePath=/gpt-connector/(?<segment>.*), /$\{segment}
+            - RewritePath=/ai-connector/(?<segment>.*), /$\{segment}
 
         - id: file-storage
           predicates:
