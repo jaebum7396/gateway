@@ -93,7 +93,7 @@ spring:
           uri: lb://trade
           filters:
             - RewritePath=/trade/(?<segment>.*), /$\{segment}
-        # file_storage/swagger 끝
+        # trade/swagger 끝
 
         - id: socket-streamer
           predicates:
@@ -145,6 +145,14 @@ spring:
           uri: lb://ai-connector
           filters:
             - RewritePath=/ai-connector/(?<segment>.*), /$\{segment}
+
+        - id: trade
+          predicates:
+            - Path=/trade/**
+            - Method=OPTIONS,POST,GET
+          uri: lb://trade
+          filters:
+            - RewritePath=/trade/(?<segment>.*), /$\{segment}
 
         - id: file-storage
           predicates:
