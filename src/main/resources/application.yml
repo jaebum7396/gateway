@@ -86,6 +86,15 @@ spring:
             - RewritePath=/file-storage/(?<segment>.*), /$\{segment}
         # file_storage/swagger 끝
 
+        # trade/swagger 시작
+        - id: trade-swagger
+          predicates:
+            - Path=/trade/swagger/**,/trade/swagger-ui/**,/trade/swagger-resources/**,/trade/v2/**
+          uri: lb://trade
+          filters:
+            - RewritePath=/trade/(?<segment>.*), /$\{segment}
+        # file_storage/swagger 끝
+
         - id: socket-streamer
           predicates:
             - Path=/socket-streamer/**
