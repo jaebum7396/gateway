@@ -154,6 +154,14 @@ spring:
           filters:
             - RewritePath=/trade/(?<segment>.*), /$\{segment}
 
+        - id: pal
+          predicates:
+            - Path=/pal/**
+            - Method=OPTIONS,POST,GET
+          uri: lb://pal
+          filters:
+            - RewritePath=/pal/(?<segment>.*), /$\{segment}
+
         - id: file-storage
           predicates:
             - Path=/file-storage/display
