@@ -162,6 +162,14 @@ spring:
           filters:
             - RewritePath=/pal/(?<segment>.*), /$\{segment}
 
+        - id: nutritionist
+          predicates:
+            - Path=/nutritionist/**
+            - Method=OPTIONS,POST,GET
+          uri: lb://nutritionist
+          filters:
+            - RewritePath=/nutritionist/(?<segment>.*), /$\{segment}
+
         - id: file-storage
           predicates:
             - Path=/file-storage/display
